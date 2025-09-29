@@ -6,18 +6,14 @@ import {
     FileText,
     TrendingUp,
     Settings,
-    Bell,
-    Search,
     Calendar,
     CheckCircle,
     XCircle,
-    Clock,
     Download,
     Filter,
     MoreVertical,
     Eye,
     Edit,
-    Trash2,
     Plus,
     Award,
     Building2,
@@ -181,20 +177,22 @@ const mockRecruiters = [
 ];
 
 // Sidebar Component
-interface SidebarProps {
+type SidebarProps = {
     role: string;
+    setRole: (role: string) => void;
     activeTab: string;
     setActiveTab: (tab: string) => void;
-}
-const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab }) => {
+};
+
+const Sidebar: React.FC<SidebarProps> = ({ role, setRole, activeTab, setActiveTab }) => {
     const adminMenuItems = [
         { id: "dashboard", label: "Dashboard", icon: Home },
         { id: "students", label: "Students", icon: GraduationCap },
         { id: "jobs", label: "Job Postings", icon: Briefcase },
         { id: "recruiters", label: "Recruiters", icon: Building2 },
         { id: "reports", label: "Reports", icon: FileText },
-        { id: "analytics", label: "Analytics", icon: BarChart3 },
-        { id: "settings", label: "Settings", icon: Settings },
+        // { id: "analytics", label: "Analytics", icon: BarChart3 },
+        // { id: "settings", label: "Settings", icon: Settings },
     ];
 
     const facultyMenuItems = [
@@ -208,91 +206,80 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab }) => {
     const menuItems = role === "admin" ? adminMenuItems : facultyMenuItems;
 
     return (
-        <div className="w-64 bg-gradient-to-b from-blue-600 to-blue-700 text-white h-screen fixed left-0 top-0 flex flex-col">
-            <div className="p-6">
-                <h1 className="text-2xl font-bold">eProduct</h1>
-                <p className="text-blue-200 text-sm mt-1">
-                    {role === "admin" ? "Admin Portal" : "Faculty Portal"}
+        <div className="w-64 bg-slate-900 text-white h-screen fixed left-0 top-0 flex flex-col">
+            <div className="p-6 border-b border-slate-700">
+                <h1 className="text-xl font-bold">Placify</h1>
+                <p className="text-slate-400 text-sm mt-1">
+                    {role === "admin" ? "Admin Dashboard" : "Faculty Dashboard"}
                 </p>
             </div>
 
-            <nav className="flex-1 px-3">
+            {/* Role Switcher */}
+            <div className="px-4 py-3 border-b border-slate-700">
+                <div className="flex gap-2 bg-slate-800 rounded-lg p-1">
+                    <button
+                        onClick={() => {
+                            setRole("admin");
+                            setActiveTab("dashboard");
+                        }}
+                        className={`flex-1 px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                            role === "admin"
+                                ? "bg-slate-700 text-white"
+                                : "text-slate-400 hover:text-white"
+                        }`}
+                    >
+                        Admin
+                    </button>
+                    <button
+                        onClick={() => {
+                            setRole("faculty");
+                            setActiveTab("dashboard");
+                        }}
+                        className={`flex-1 px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                            role === "faculty"
+                                ? "bg-slate-700 text-white"
+                                : "text-slate-400 hover:text-white"
+                        }`}
+                    >
+                        Faculty
+                    </button>
+                </div>
+            </div>
+
+            <nav className="flex-1 px-3 py-4 overflow-y-auto">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
                     return (
                         <button
                             key={item.id}
                             onClick={() => setActiveTab(item.id)}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-all ${
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all ${
                                 activeTab === item.id
-                                    ? "bg-white text-blue-600 shadow-lg"
-                                    : "text-blue-100 hover:bg-blue-500/30"
+                                    ? "bg-slate-700 text-white"
+                                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
                             }`}
                         >
-                            <Icon size={20} />
-                            <span className="font-medium">{item.label}</span>
+                            <Icon size={18} />
+                            <span className="text-sm font-medium">
+                                {item.label}
+                            </span>
                         </button>
                     );
                 })}
             </nav>
 
-            <div className="p-4 border-t border-blue-500">
-                <div className="flex gap-3 text-blue-200 text-sm">
-                    <a href="#" className="hover:text-white">
-                        Facebook
-                    </a>
-                    <a href="#" className="hover:text-white">
-                        Twitter
-                    </a>
-                    <a href="#" className="hover:text-white">
-                        Google+
-                    </a>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// Top Navbar
-interface TopNavbarProps {
-    role: string;
-}
-const TopNavbar: React.FC<TopNavbarProps> = ({ role }) => {
-    return (
-        <div className="h-16 bg-white border-b border-gray-200 fixed top-0 right-0 left-64 z-10 flex items-center justify-between px-6">
-            <div className="flex items-center gap-4 flex-1 max-w-xl">
-                <div className="relative flex-1">
-                    <Search
-                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                        size={20}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Search students, jobs, companies..."
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-                <button className="p-2 hover:bg-gray-100 rounded-lg relative">
-                    <Bell size={20} className="text-gray-600" />
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
-                <button className="p-2 hover:bg-gray-100 rounded-lg">
-                    <Settings size={20} className="text-gray-600" />
-                </button>
-                <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
+            <div className="p-4 border-t border-slate-700">
+                <div className="flex items-center gap-3">
                     <img
                         src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin"
                         alt="Profile"
                         className="w-10 h-10 rounded-full"
                     />
                     <div className="text-sm">
-                        <p className="font-semibold text-gray-800">
+                        <p className="font-semibold text-white">
                             {role === "admin" ? "Admin User" : "Dr. Faculty"}
                         </p>
-                        <p className="text-gray-500">
+                        <p className="text-slate-400 text-xs">
                             {role === "admin"
                                 ? "Placement Cell"
                                 : "CS Department"}
@@ -305,26 +292,28 @@ const TopNavbar: React.FC<TopNavbarProps> = ({ role }) => {
 };
 
 // Stats Card Component
-interface StatsCardProps {
+type StatsCardProps = {
     title: string;
     value: string | number;
     change?: number;
     icon: React.ComponentType<{ size?: number; className?: string }>;
     color: string;
-}
+};
 
 const StatsCard: React.FC<StatsCardProps> = ({ title, value, change, icon: Icon, color }) => {
     return (
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white rounded-lg shadow-sm p-5 border border-slate-200">
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-gray-600 text-sm font-medium">{title}</p>
-                    <h3 className="text-3xl font-bold text-gray-900 mt-2">
+                    <p className="text-slate-600 text-xs font-medium uppercase tracking-wide">
+                        {title}
+                    </p>
+                    <h3 className="text-2xl font-bold text-slate-900 mt-2">
                         {value}
                     </h3>
-                    {change !== undefined && (
+                    {change && (
                         <p
-                            className={`text-sm mt-2 ${
+                            className={`text-xs mt-2 font-medium ${
                                 change > 0 ? "text-green-600" : "text-red-600"
                             }`}
                         >
@@ -333,8 +322,8 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, change, icon: Icon,
                         </p>
                     )}
                 </div>
-                <div className={`p-4 rounded-full ${color}`}>
-                    <Icon size={24} className="text-white" />
+                <div className={`p-3 rounded-lg ${color}`}>
+                    <Icon size={20} className="text-white" />
                 </div>
             </div>
         </div>
@@ -346,74 +335,74 @@ const AdminDashboard = () => {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-slate-900">
                     Dashboard Overview
                 </h2>
-                <p className="text-gray-600 mt-1">
-                    Welcome back! Here's what's happening with placements today.
+                <p className="text-slate-600 mt-1 text-sm">
+                    Track placement activities and student progress
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatsCard
                     title="Total Students"
                     value="1,248"
                     change={12}
                     icon={GraduationCap}
-                    color="bg-blue-500"
+                    color="bg-slate-700"
                 />
                 <StatsCard
                     title="Active Jobs"
                     value="42"
                     change={8}
                     icon={Briefcase}
-                    color="bg-green-500"
+                    color="bg-emerald-600"
                 />
                 <StatsCard
                     title="Placed Students"
                     value="386"
                     change={15}
                     icon={Award}
-                    color="bg-purple-500"
+                    color="bg-violet-600"
                 />
                 <StatsCard
                     title="Companies"
                     value="28"
                     change={-3}
                     icon={Building2}
-                    color="bg-orange-500"
+                    color="bg-amber-600"
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-base font-semibold text-slate-900">
                             Recent Job Postings
                         </h3>
-                        <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                            View All
+                        <button className="text-slate-600 hover:text-slate-900 text-xs font-medium">
+                            View All →
                         </button>
                     </div>
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                         {mockJobs.slice(0, 4).map((job) => (
                             <div
                                 key={job.id}
-                                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                                className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
                             >
                                 <div className="flex-1">
-                                    <p className="font-medium text-gray-900">
+                                    <p className="font-medium text-slate-900 text-sm">
                                         {job.position}
                                     </p>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-xs text-slate-600">
                                         {job.company}
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-semibold text-blue-600">
+                                    <p className="font-semibold text-slate-900 text-sm">
                                         {job.stipend}
                                     </p>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-slate-500">
                                         {job.applications} applied
                                     </p>
                                 </div>
@@ -422,70 +411,77 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                            Placement Statistics
+                        <h3 className="text-base font-semibold text-slate-900">
+                            Department Placement Rate
                         </h3>
-                        <select className="text-sm border border-gray-300 rounded-lg px-3 py-1">
+                        <select className="text-xs border border-slate-300 rounded px-2 py-1">
                             <option>This Month</option>
                             <option>Last 3 Months</option>
-                            <option>This Year</option>
                         </select>
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div>
-                            <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-slate-700 font-medium">
                                     Computer Science
                                 </span>
-                                <span className="font-semibold">85%</span>
+                                <span className="font-semibold text-slate-900">
+                                    85%
+                                </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="w-full bg-slate-200 rounded-full h-1.5">
                                 <div
-                                    className="bg-blue-600 h-2 rounded-full"
+                                    className="bg-slate-700 h-1.5 rounded-full"
                                     style={{ width: "85%" }}
                                 ></div>
                             </div>
                         </div>
                         <div>
-                            <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-slate-700 font-medium">
                                     Information Tech
                                 </span>
-                                <span className="font-semibold">72%</span>
+                                <span className="font-semibold text-slate-900">
+                                    72%
+                                </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="w-full bg-slate-200 rounded-full h-1.5">
                                 <div
-                                    className="bg-green-600 h-2 rounded-full"
+                                    className="bg-emerald-600 h-1.5 rounded-full"
                                     style={{ width: "72%" }}
                                 ></div>
                             </div>
                         </div>
                         <div>
-                            <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-slate-700 font-medium">
                                     Electronics
                                 </span>
-                                <span className="font-semibold">68%</span>
+                                <span className="font-semibold text-slate-900">
+                                    68%
+                                </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="w-full bg-slate-200 rounded-full h-1.5">
                                 <div
-                                    className="bg-purple-600 h-2 rounded-full"
+                                    className="bg-violet-600 h-1.5 rounded-full"
                                     style={{ width: "68%" }}
                                 ></div>
                             </div>
                         </div>
                         <div>
-                            <div className="flex justify-between text-sm mb-2">
-                                <span className="text-gray-600">
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-slate-700 font-medium">
                                     Mechanical
                                 </span>
-                                <span className="font-semibold">54%</span>
+                                <span className="font-semibold text-slate-900">
+                                    54%
+                                </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="w-full bg-slate-200 rounded-full h-1.5">
                                 <div
-                                    className="bg-orange-600 h-2 rounded-full"
+                                    className="bg-amber-600 h-1.5 rounded-full"
                                     style={{ width: "54%" }}
                                 ></div>
                             </div>
@@ -500,163 +496,149 @@ const AdminDashboard = () => {
 // Students Table Component
 const StudentsTable = () => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-slate-900">
                         Students Management
                     </h2>
-                    <p className="text-gray-600 mt-1">
+                    <p className="text-slate-600 mt-1 text-sm">
                         {mockStudents.length} students registered
                     </p>
                 </div>
-                <div className="flex gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                        <Filter size={18} />
+                <div className="flex gap-2">
+                    <button className="flex items-center gap-2 px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-sm">
+                        <Filter size={16} />
                         Filter
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                        <Download size={18} />
+                    <button className="flex items-center gap-2 px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-sm">
+                        <Download size={16} />
                         Export
                     </button>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    ID
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Name
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Department
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Applications
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Interviews
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Offers
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    CGPA
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Status
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {mockStudents.map((student, index) => (
-                                <tr
-                                    key={student.id}
-                                    className={
-                                        index % 2 === 1
-                                            ? "bg-blue-50/30"
-                                            : "bg-white"
-                                    }
-                                >
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                                        #{student.id}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <img
-                                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}`}
-                                                alt={student.name}
-                                                className="w-8 h-8 rounded-full"
-                                            />
-                                            <span className="font-medium text-gray-900">
-                                                {student.name}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">
-                                        {student.dept}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                                        {student.applications}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                                        {student.interviews}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                                        {student.offers}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
-                                        {student.cgpa}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span
-                                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                                                student.status === "Placed"
-                                                    ? "bg-green-100 text-green-700"
-                                                    : "bg-blue-100 text-blue-700"
-                                            }`}
-                                        >
-                                            {student.status === "Placed" ? (
-                                                <CheckCircle size={12} />
-                                            ) : (
-                                                <Clock size={12} />
-                                            )}
-                                            {student.status}
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200">
+                <table className="w-full">
+                    <thead className="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                ID
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Name
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Department
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Applications
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Interviews
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Offers
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                CGPA
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Status
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                        {mockStudents.map((student) => (
+                            <tr key={student.id} className="hover:bg-slate-50">
+                                <td className="px-4 py-3 text-sm font-medium text-slate-900">
+                                    #{student.id}
+                                </td>
+                                <td className="px-4 py-3">
+                                    <div className="flex items-center gap-2">
+                                        <img
+                                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}`}
+                                            alt={student.name}
+                                            className="w-7 h-7 rounded-full"
+                                        />
+                                        <span className="font-medium text-slate-900 text-sm">
+                                            {student.name}
                                         </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <button className="p-1 hover:bg-gray-100 rounded">
-                                                <Eye
-                                                    size={16}
-                                                    className="text-gray-600"
-                                                />
-                                            </button>
-                                            <button className="p-1 hover:bg-gray-100 rounded">
-                                                <Edit
-                                                    size={16}
-                                                    className="text-gray-600"
-                                                />
-                                            </button>
-                                            <button className="p-1 hover:bg-gray-100 rounded">
-                                                <MoreVertical
-                                                    size={16}
-                                                    className="text-gray-600"
-                                                />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                    <p className="text-sm text-gray-600">
+                                    </div>
+                                </td>
+                                <td className="px-4 py-3 text-sm text-slate-600">
+                                    {student.dept}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-slate-900 font-medium">
+                                    {student.applications}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-slate-900 font-medium">
+                                    {student.interviews}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-slate-900 font-medium">
+                                    {student.offers}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-slate-900 font-semibold">
+                                    {student.cgpa}
+                                </td>
+                                <td className="px-4 py-3">
+                                    <span
+                                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                                            student.status === "Placed"
+                                                ? "bg-emerald-100 text-emerald-700"
+                                                : "bg-slate-100 text-slate-700"
+                                        }`}
+                                    >
+                                        {student.status}
+                                    </span>
+                                </td>
+                                <td className="px-4 py-3">
+                                    <div className="flex items-center gap-1">
+                                        <button className="p-1 hover:bg-slate-100 rounded">
+                                            <Eye
+                                                size={14}
+                                                className="text-slate-600"
+                                            />
+                                        </button>
+                                        <button className="p-1 hover:bg-slate-100 rounded">
+                                            <Edit
+                                                size={14}
+                                                className="text-slate-600"
+                                            />
+                                        </button>
+                                        <button className="p-1 hover:bg-slate-100 rounded">
+                                            <MoreVertical
+                                                size={14}
+                                                className="text-slate-600"
+                                            />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div className="px-4 py-3 border-t border-slate-200 flex items-center justify-between">
+                    <p className="text-xs text-slate-600">
                         Showing 1-5 of {mockStudents.length}
                     </p>
-                    <div className="flex gap-2">
-                        <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
-                            Previous
+                    <div className="flex gap-1">
+                        <button className="px-2 py-1 border border-slate-300 rounded text-xs hover:bg-slate-50">
+                            Prev
                         </button>
-                        <button className="px-3 py-1 bg-blue-600 text-white rounded">
+                        <button className="px-2 py-1 bg-slate-700 text-white rounded text-xs">
                             1
                         </button>
-                        <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                        <button className="px-2 py-1 border border-slate-300 rounded text-xs hover:bg-slate-50">
                             2
                         </button>
-                        <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                        <button className="px-2 py-1 border border-slate-300 rounded text-xs hover:bg-slate-50">
                             3
                         </button>
-                        <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">
+                        <button className="px-2 py-1 border border-slate-300 rounded text-xs hover:bg-slate-50">
                             Next
                         </button>
                     </div>
@@ -669,77 +651,77 @@ const StudentsTable = () => {
 // Jobs Management Component
 const JobsManagement = () => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-slate-900">
                         Job Postings
                     </h2>
-                    <p className="text-gray-600 mt-1">
+                    <p className="text-slate-600 mt-1 text-sm">
                         Manage all job and internship opportunities
                     </p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <Plus size={18} />
+                <button className="flex items-center gap-2 px-3 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 text-sm">
+                    <Plus size={16} />
                     Add New Job
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-3">
                 {mockJobs.map((job) => (
                     <div
                         key={job.id}
-                        className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                        className="bg-white rounded-lg shadow-sm border border-slate-200 p-4"
                     >
                         <div className="flex items-start justify-between">
-                            <div className="flex gap-4 flex-1">
-                                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+                            <div className="flex gap-3 flex-1">
+                                <div className="w-10 h-10 bg-gradient-to-br from-slate-700 to-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                                     {job.company.charAt(0)}
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-semibold text-gray-900">
+                                    <h3 className="text-base font-semibold text-slate-900">
                                         {job.position}
                                     </h3>
-                                    <p className="text-gray-600 mt-1">
+                                    <p className="text-slate-600 mt-1 text-sm">
                                         {job.company}
                                     </p>
-                                    <div className="flex items-center gap-4 mt-3 text-sm">
-                                        <span className="flex items-center gap-1 text-gray-600">
-                                            <Briefcase size={14} />
+                                    <div className="flex items-center gap-3 mt-2 text-xs">
+                                        <span className="flex items-center gap-1 text-slate-600">
+                                            <Briefcase size={12} />
                                             {job.dept}
                                         </span>
-                                        <span className="flex items-center gap-1 text-gray-600">
-                                            <Calendar size={14} />
-                                            Posted: {job.posted}
+                                        <span className="flex items-center gap-1 text-slate-600">
+                                            <Calendar size={12} />
+                                            {job.posted}
                                         </span>
-                                        <span className="font-semibold text-blue-600">
-                                            {job.stipend}/month
+                                        <span className="font-semibold text-slate-900">
+                                            {job.stipend}/mo
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-3">
+                            <div className="flex items-start gap-2">
                                 <div className="text-right">
-                                    <p className="text-2xl font-bold text-gray-900">
+                                    <p className="text-xl font-bold text-slate-900">
                                         {job.applications}
                                     </p>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-xs text-slate-600">
                                         Applications
                                     </p>
                                 </div>
                                 <span
-                                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                    className={`px-2 py-1 rounded-full text-xs font-medium ${
                                         job.status === "Active"
-                                            ? "bg-green-100 text-green-700"
-                                            : "bg-gray-100 text-gray-700"
+                                            ? "bg-emerald-100 text-emerald-700"
+                                            : "bg-slate-100 text-slate-700"
                                     }`}
                                 >
                                     {job.status}
                                 </span>
-                                <button className="p-2 hover:bg-gray-100 rounded">
+                                <button className="p-1 hover:bg-slate-100 rounded">
                                     <MoreVertical
-                                        size={18}
-                                        className="text-gray-600"
+                                        size={16}
+                                        className="text-slate-600"
                                     />
                                 </button>
                             </div>
@@ -754,102 +736,100 @@ const JobsManagement = () => {
 // Recruiters Management
 const RecruitersManagement = () => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-slate-900">
                         Recruiters & Companies
                     </h2>
-                    <p className="text-gray-600 mt-1">
+                    <p className="text-slate-600 mt-1 text-sm">
                         Manage employer partnerships
                     </p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <Plus size={18} />
+                <button className="flex items-center gap-2 px-3 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 text-sm">
+                    <Plus size={16} />
                     Add Recruiter
                 </button>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200">
                 <table className="w-full">
-                    <thead className="bg-gray-50 border-b border-gray-200">
+                    <thead className="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
                                 ID
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
                                 Company
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
                                 Contact
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
                                 Active Jobs
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
                                 Joined
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
                                 Status
                             </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
                                 Actions
                             </th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-slate-200">
                         {mockRecruiters.map((recruiter) => (
-                            <tr key={recruiter.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                            <tr
+                                key={recruiter.id}
+                                className="hover:bg-slate-50"
+                            >
+                                <td className="px-4 py-3 text-sm font-medium text-slate-900">
                                     #{recruiter.id}
                                 </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold">
+                                <td className="px-4 py-3">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-xs">
                                             {recruiter.company.charAt(0)}
                                         </div>
-                                        <span className="font-medium text-gray-900">
+                                        <span className="font-medium text-slate-900 text-sm">
                                             {recruiter.company}
                                         </span>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 text-sm text-gray-600">
+                                <td className="px-4 py-3 text-sm text-slate-600">
                                     {recruiter.contact}
                                 </td>
-                                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                                <td className="px-4 py-3 text-sm font-medium text-slate-900">
                                     {recruiter.jobs}
                                 </td>
-                                <td className="px-6 py-4 text-sm text-gray-600">
+                                <td className="px-4 py-3 text-sm text-slate-600">
                                     {recruiter.joined}
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 py-3">
                                     <span
-                                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+                                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
                                             recruiter.status === "Verified"
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-yellow-100 text-yellow-700"
+                                                ? "bg-emerald-100 text-emerald-700"
+                                                : "bg-amber-100 text-amber-700"
                                         }`}
                                     >
-                                        {recruiter.status === "Verified" ? (
-                                            <CheckCircle size={12} />
-                                        ) : (
-                                            <Clock size={12} />
-                                        )}
                                         {recruiter.status}
                                     </span>
                                 </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-2">
-                                        <button className="p-1 hover:bg-gray-100 rounded">
+                                <td className="px-4 py-3">
+                                    <div className="flex items-center gap-1">
+                                        <button className="p-1 hover:bg-slate-100 rounded">
                                             <Eye
-                                                size={16}
-                                                className="text-gray-600"
+                                                size={14}
+                                                className="text-slate-600"
                                             />
                                         </button>
-                                        <button className="p-1 hover:bg-gray-100 rounded">
+                                        <button className="p-1 hover:bg-slate-100 rounded">
                                             <Edit
-                                                size={16}
-                                                className="text-gray-600"
+                                                size={14}
+                                                className="text-slate-600"
                                             />
                                         </button>
                                     </div>
@@ -866,60 +846,60 @@ const RecruitersManagement = () => {
 // Faculty Approvals Component
 const FacultyApprovals = () => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-slate-900">
                     Pending Approvals
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-slate-600 mt-1 text-sm">
                     {mockApprovals.filter((a) => a.status === "Pending").length}{" "}
                     items require your attention
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-3">
                 {mockApprovals.map((approval) => (
                     <div
                         key={approval.id}
-                        className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                        className="bg-white rounded-lg shadow-sm border border-slate-200 p-4"
                     >
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4 flex-1">
+                            <div className="flex items-center gap-3 flex-1">
                                 <img
                                     src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${approval.student}`}
                                     alt={approval.student}
-                                    className="w-12 h-12 rounded-full"
+                                    className="w-10 h-10 rounded-full"
                                 />
                                 <div className="flex-1">
-                                    <h3 className="font-semibold text-gray-900">
+                                    <h3 className="font-semibold text-slate-900 text-sm">
                                         {approval.student}
                                     </h3>
-                                    <p className="text-sm text-gray-600 mt-1">
+                                    <p className="text-xs text-slate-600 mt-0.5">
                                         {approval.type}
                                     </p>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-slate-500 mt-0.5">
                                         Requested on {approval.date}
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                                 <span
-                                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                    className={`px-2 py-1 rounded-full text-xs font-medium ${
                                         approval.status === "Pending"
-                                            ? "bg-yellow-100 text-yellow-700"
-                                            : "bg-green-100 text-green-700"
+                                            ? "bg-amber-100 text-amber-700"
+                                            : "bg-emerald-100 text-emerald-700"
                                     }`}
                                 >
                                     {approval.status}
                                 </span>
                                 {approval.status === "Pending" && (
                                     <div className="flex gap-2">
-                                        <button className="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                                            <CheckCircle size={16} />
+                                        <button className="flex items-center gap-1 px-3 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-xs">
+                                            <CheckCircle size={14} />
                                             Approve
                                         </button>
-                                        <button className="flex items-center gap-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                                            <XCircle size={16} />
+                                        <button className="flex items-center gap-1 px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs">
+                                            <XCircle size={14} />
                                             Reject
                                         </button>
                                     </div>
@@ -936,132 +916,127 @@ const FacultyApprovals = () => {
 // Faculty Students Progress
 const FacultyProgress = () => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-slate-900">
                     Student Progress Tracking
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-slate-600 mt-1 text-sm">
                     Monitor your mentees' placement journey
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <StatsCard
                     title="My Students"
                     value="24"
                     icon={Users}
-                    color="bg-blue-500"
+                    color="bg-slate-700"
                 />
                 <StatsCard
                     title="Active Applications"
                     value="156"
                     icon={FileText}
-                    color="bg-green-500"
+                    color="bg-emerald-600"
                 />
                 <StatsCard
                     title="Placed"
                     value="8"
                     icon={Award}
-                    color="bg-purple-500"
+                    color="bg-violet-600"
                 />
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Student
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Applications
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Interviews
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Status
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Last Activity
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {mockStudents.slice(0, 5).map((student) => (
-                                <tr
-                                    key={student.id}
-                                    className="hover:bg-gray-50"
-                                >
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <img
-                                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}`}
-                                                alt={student.name}
-                                                className="w-10 h-10 rounded-full"
-                                            />
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    {student.name}
-                                                </p>
-                                                <p className="text-sm text-gray-600">
-                                                    {student.id}
-                                                </p>
-                                            </div>
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200">
+                <table className="w-full">
+                    <thead className="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Student
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Applications
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Interviews
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Status
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Last Activity
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                        {mockStudents.slice(0, 5).map((student) => (
+                            <tr key={student.id} className="hover:bg-slate-50">
+                                <td className="px-4 py-3">
+                                    <div className="flex items-center gap-2">
+                                        <img
+                                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}`}
+                                            alt={student.name}
+                                            className="w-8 h-8 rounded-full"
+                                        />
+                                        <div>
+                                            <p className="font-medium text-slate-900 text-sm">
+                                                {student.name}
+                                            </p>
+                                            <p className="text-xs text-slate-600">
+                                                {student.id}
+                                            </p>
                                         </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-full bg-gray-200 rounded-full h-2 max-w-[100px]">
-                                                <div
-                                                    className="bg-blue-600 h-2 rounded-full"
-                                                    style={{
-                                                        width: `${
-                                                            (student.applications /
-                                                                15) *
-                                                            100
-                                                        }%`,
-                                                    }}
-                                                ></div>
-                                            </div>
-                                            <span className="text-sm font-medium text-gray-900">
-                                                {student.applications}
-                                            </span>
+                                    </div>
+                                </td>
+                                <td className="px-4 py-3">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-full bg-slate-200 rounded-full h-1.5 max-w-[80px]">
+                                            <div
+                                                className="bg-slate-700 h-1.5 rounded-full"
+                                                style={{
+                                                    width: `${
+                                                        (student.applications /
+                                                            15) *
+                                                        100
+                                                    }%`,
+                                                }}
+                                            ></div>
                                         </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                                        {student.interviews}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span
-                                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                                                student.status === "Placed"
-                                                    ? "bg-green-100 text-green-700"
-                                                    : "bg-blue-100 text-blue-700"
-                                            }`}
-                                        >
-                                            {student.status}
+                                        <span className="text-xs font-medium text-slate-900">
+                                            {student.applications}
                                         </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">
-                                        2 hours ago
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg">
-                                            <Eye size={14} />
-                                            View Details
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                </td>
+                                <td className="px-4 py-3 text-sm font-medium text-slate-900">
+                                    {student.interviews}
+                                </td>
+                                <td className="px-4 py-3">
+                                    <span
+                                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                                            student.status === "Placed"
+                                                ? "bg-emerald-100 text-emerald-700"
+                                                : "bg-slate-100 text-slate-700"
+                                        }`}
+                                    >
+                                        {student.status}
+                                    </span>
+                                </td>
+                                <td className="px-4 py-3 text-xs text-slate-600">
+                                    2 hours ago
+                                </td>
+                                <td className="px-4 py-3">
+                                    <button className="flex items-center gap-1 px-2 py-1 text-xs text-slate-600 hover:bg-slate-100 rounded-lg">
+                                        <Eye size={12} />
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
@@ -1073,29 +1048,29 @@ const FacultyFeedback = () => {
     const [selectedStudent, setSelectedStudent] = useState("");
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-slate-900">
                     Student Feedback
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-slate-600 mt-1 text-sm">
                     Provide guidance and mentorship to your students
                 </p>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
+                <h3 className="text-base font-semibold text-slate-900 mb-4">
                     Add New Feedback
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs font-medium text-slate-700 mb-1.5">
                             Select Student
                         </label>
                         <select
                             value={selectedStudent}
                             onChange={(e) => setSelectedStudent(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 text-sm"
                         >
                             <option value="">Choose a student...</option>
                             {mockStudents.map((student) => (
@@ -1106,48 +1081,48 @@ const FacultyFeedback = () => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs font-medium text-slate-700 mb-1.5">
                             Feedback
                         </label>
                         <textarea
                             value={feedbackText}
                             onChange={(e) => setFeedbackText(e.target.value)}
-                            rows={4}
+                            rows={3}
                             placeholder="Enter your feedback, suggestions, or recommendations..."
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 text-sm"
                         />
                     </div>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 text-sm">
                         Submit Feedback
                     </button>
                 </div>
             </div>
 
-            <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">
+            <div className="space-y-3">
+                <h3 className="text-base font-semibold text-slate-900">
                     Recent Feedback
                 </h3>
                 {mockStudents.slice(0, 3).map((student) => (
                     <div
                         key={student.id}
-                        className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                        className="bg-white rounded-lg shadow-sm border border-slate-200 p-4"
                     >
-                        <div className="flex items-start gap-4">
+                        <div className="flex items-start gap-3">
                             <img
                                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.name}`}
                                 alt={student.name}
-                                className="w-12 h-12 rounded-full"
+                                className="w-10 h-10 rounded-full"
                             />
                             <div className="flex-1">
-                                <div className="flex items-center justify-between mb-2">
-                                    <h4 className="font-semibold text-gray-900">
+                                <div className="flex items-center justify-between mb-1">
+                                    <h4 className="font-semibold text-slate-900 text-sm">
                                         {student.name}
                                     </h4>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-xs text-slate-500">
                                         2 days ago
                                     </span>
                                 </div>
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-slate-600 text-xs leading-relaxed">
                                     Great progress on technical skills.
                                     Recommend focusing on communication skills
                                     for upcoming interviews. Consider practicing
@@ -1166,169 +1141,174 @@ const FacultyFeedback = () => {
 // Reports Component
 const ReportsComponent = () => {
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-slate-900">
                     Reports & Analytics
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-slate-600 mt-1 text-sm">
                     Generate reports for DTE and authorities
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-100 rounded-lg">
-                            <FileText size={24} className="text-blue-600" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-slate-100 rounded-lg">
+                            <FileText size={20} className="text-slate-700" />
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-900">
+                            <h3 className="font-semibold text-slate-900 text-sm">
                                 Placement Report
                             </h3>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-xs text-slate-600 mt-0.5">
                                 Monthly summary
                             </p>
                         </div>
                     </div>
-                    <button className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                        <Download size={16} />
+                    <button className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 text-xs">
+                        <Download size={14} />
                         Download PDF
                     </button>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-green-100 rounded-lg">
-                            <TrendingUp size={24} className="text-green-600" />
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-emerald-100 rounded-lg">
+                            <TrendingUp
+                                size={20}
+                                className="text-emerald-700"
+                            />
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-900">
+                            <h3 className="font-semibold text-slate-900 text-sm">
                                 Department Wise
                             </h3>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-xs text-slate-600 mt-0.5">
                                 Placement statistics
                             </p>
                         </div>
                     </div>
-                    <button className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        <Download size={16} />
+                    <button className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-xs">
+                        <Download size={14} />
                         Download Excel
                     </button>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-purple-100 rounded-lg">
-                            <Building2 size={24} className="text-purple-600" />
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-violet-100 rounded-lg">
+                            <Building2 size={20} className="text-violet-700" />
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-900">
+                            <h3 className="font-semibold text-slate-900 text-sm">
                                 Company Report
                             </h3>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-xs text-slate-600 mt-0.5">
                                 Recruiter analytics
                             </p>
                         </div>
                     </div>
-                    <button className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                        <Download size={16} />
+                    <button className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 text-xs">
+                        <Download size={14} />
                         Download PDF
                     </button>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-orange-100 rounded-lg">
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-amber-100 rounded-lg">
                             <GraduationCap
-                                size={24}
-                                className="text-orange-600"
+                                size={20}
+                                className="text-amber-700"
                             />
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-900">
+                            <h3 className="font-semibold text-slate-900 text-sm">
                                 Student Database
                             </h3>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-xs text-slate-600 mt-0.5">
                                 Complete records
                             </p>
                         </div>
                     </div>
-                    <button className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
-                        <Download size={16} />
+                    <button className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-xs">
+                        <Download size={14} />
                         Download Excel
                     </button>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-red-100 rounded-lg">
-                            <Award size={24} className="text-red-600" />
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-red-100 rounded-lg">
+                            <Award size={20} className="text-red-700" />
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-900">
+                            <h3 className="font-semibold text-slate-900 text-sm">
                                 DTE Report
                             </h3>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-xs text-slate-600 mt-0.5">
                                 Official submission
                             </p>
                         </div>
                     </div>
-                    <button className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                        <Download size={16} />
+                    <button className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs">
+                        <Download size={14} />
                         Download PDF
                     </button>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-indigo-100 rounded-lg">
-                            <BarChart3 size={24} className="text-indigo-600" />
+                <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-indigo-100 rounded-lg">
+                            <BarChart3 size={20} className="text-indigo-700" />
                         </div>
                         <div>
-                            <h3 className="font-semibold text-gray-900">
+                            <h3 className="font-semibold text-slate-900 text-sm">
                                 Custom Report
                             </h3>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-xs text-slate-600 mt-0.5">
                                 Generate custom
                             </p>
                         </div>
                     </div>
-                    <button className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                        <Plus size={16} />
+                    <button className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-xs">
+                        <Plus size={14} />
                         Create Report
                     </button>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
+                <h3 className="text-base font-semibold text-slate-900 mb-4">
                     Quick Stats for Reports
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
-                        <p className="text-3xl font-bold text-blue-600">
+                        <p className="text-2xl font-bold text-slate-700">
                             1,248
                         </p>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-xs text-slate-600 mt-1">
                             Total Students
                         </p>
                     </div>
                     <div className="text-center">
-                        <p className="text-3xl font-bold text-green-600">386</p>
-                        <p className="text-sm text-gray-600 mt-1">Placed</p>
+                        <p className="text-2xl font-bold text-emerald-600">
+                            386
+                        </p>
+                        <p className="text-xs text-slate-600 mt-1">Placed</p>
                     </div>
                     <div className="text-center">
-                        <p className="text-3xl font-bold text-purple-600">
+                        <p className="text-2xl font-bold text-violet-600">
                             30.9%
                         </p>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-xs text-slate-600 mt-1">
                             Placement Rate
                         </p>
                     </div>
                     <div className="text-center">
-                        <p className="text-3xl font-bold text-orange-600">28</p>
-                        <p className="text-sm text-gray-600 mt-1">Companies</p>
+                        <p className="text-2xl font-bold text-amber-600">28</p>
+                        <p className="text-xs text-slate-600 mt-1">Companies</p>
                     </div>
                 </div>
             </div>
@@ -1337,8 +1317,8 @@ const ReportsComponent = () => {
 };
 
 // Main App Component
-const AdminFaculty = () => {
-    const [role, setRole] = useState("admin"); // 'admin' or 'faculty'
+const App = () => {
+    const [role, setRole] = useState("admin");
     const [activeTab, setActiveTab] = useState("dashboard");
 
     const renderContent = () => {
@@ -1376,53 +1356,19 @@ const AdminFaculty = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Role Switcher - For demo purposes */}
-            <div className="fixed top-4 right-4 z-50">
-                <div className="bg-white rounded-lg shadow-lg p-2 flex gap-2">
-                    <button
-                        onClick={() => {
-                            setRole("admin");
-                            setActiveTab("dashboard");
-                        }}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                            role === "admin"
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
-                    >
-                        Admin View
-                    </button>
-                    <button
-                        onClick={() => {
-                            setRole("faculty");
-                            setActiveTab("dashboard");
-                        }}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                            role === "faculty"
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
-                    >
-                        Faculty View
-                    </button>
-                </div>
-            </div>
-
+        <div className="min-h-screen bg-slate-100 overflow-hidden">
             <Sidebar
                 role={role}
+                setRole={setRole}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
             />
-            <TopNavbar   role={role} />
 
-            <main className="ml-64 pt-16">
-                <div className="p-8">{renderContent()}</div>
+            <main className="ml-64 h-screen overflow-y-auto">
+                <div className="p-6">{renderContent()}</div>
             </main>
         </div>
     );
 };
 
-export default AdminFaculty;
-
-
+export default App;
