@@ -9,6 +9,7 @@ import ApplicationsPage from "./pages/studentPortal/ApplicationTracker";
 import OpportunitiesPage from "./pages/studentPortal/RecommendedOpportunities";
 import CertificatesPage from "./pages/studentPortal/DigitalCertificate";
 import ProfilePage from "./pages/studentPortal/StudentProfile";
+import EmployerPortal from "./pages/EmployerPortal";
 
 // Student Portal Container Component
 const StudentPortal = () => {
@@ -46,6 +47,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/adminfaculty" element={<AdminFaculty />} />
                     <Route path="/employerlogin" element={<EmployerLogin />} />
+                    <Route path="/employerportal" element={<EmployerPortal />} />
                     <Route path="/studentdashboard" element={<StudentPortal />} />
                 </Routes>
             </Router>
