@@ -5,7 +5,6 @@ import {
     Briefcase,
     FileText,
     TrendingUp,
-    Settings,
     Calendar,
     CheckCircle,
     XCircle,

@@ -8,7 +8,6 @@ import {
     ChevronRight,
     ShieldCheck,
     ShieldX,
-    Icon,
 } from 'lucide-react';
 
 // --- TYPE DEFINITIONS ---
@@ -68,6 +67,7 @@ const VerificationRow = ({ name, status, imageUrl }: Verification) => (
 
 // --- MAIN COMPONENT ---
 const EmployerDashboard = () => {
+    //@ts-ignore
     const [activeTab, setActiveTab] = useState('Jobs');
     
     return (
