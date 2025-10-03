@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
     ArrowRight,
     CheckCircle,
@@ -46,9 +47,26 @@ const LandingPage = () => {
                             Impact
                         </a>
                     </div>
-                    <button className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 hover:shadow-lg transition-all">
-                        Get Started
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <Link 
+                            to="/adminfaculty"
+                            className="px-4 py-2 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition-all"
+                        >
+                            Admin/Faculty
+                        </Link>
+                        <Link 
+                            to="/employerlogin"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all"
+                        >
+                            Employer
+                        </Link>
+                        <Link 
+                            to="/studentdashboard"
+                            className="px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 hover:shadow-lg transition-all"
+                        >
+                            Student Portal
+                        </Link>
+                    </div>
                 </nav>
             </header>
 
